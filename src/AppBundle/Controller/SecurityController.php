@@ -2,10 +2,11 @@
 
 namespace AppBundle\Controller;
 
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+
 
 class SecurityController extends AbstractController
 {
