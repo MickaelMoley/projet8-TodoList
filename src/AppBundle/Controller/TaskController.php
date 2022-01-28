@@ -7,6 +7,7 @@ use AppBundle\Form\TaskType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\User;
 
 class TaskController extends AbstractController
 {
@@ -59,6 +60,16 @@ class TaskController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
+
+            /*
+                Si la tâche n'est pas relié à un utilisateur alors, on l'attache à un utilisateur anonyme
+            */
+            if(!$task->getUser()){
+                $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findOneBy(['email' => 'anonymous@mail.anon']);
+
+                if($user)
+                    $task->setUser($user);
+            }
 
             return $this->redirectToRoute('task_list');
         }
