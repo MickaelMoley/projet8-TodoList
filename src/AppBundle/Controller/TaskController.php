@@ -57,9 +57,6 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            $this->addFlash('success', 'La tâche a bien été modifiée.');
 
             /*
                 Si la tâche n'est pas relié à un utilisateur alors, on l'attache à un utilisateur anonyme
@@ -67,9 +64,16 @@ class TaskController extends AbstractController
             if(!$task->getUser()){
                 $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findOneBy(['email' => 'anonymous@mail.anon']);
 
-                if($user)
+                if($user){
                     $task->setUser($user);
+                }
             }
+
+            $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'La tâche a bien été modifiée.');
+
+
 
             return $this->redirectToRoute('task_list');
         }
