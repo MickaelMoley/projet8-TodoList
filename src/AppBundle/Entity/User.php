@@ -47,11 +47,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $tasks;
 
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
     }
-
+    
     public function getId()
     {
         return $this->id;
@@ -94,7 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles()
     {
-        return array('ROLE_USER');
+        return $this->roles;
     }
 
     public function eraseCredentials()
@@ -131,6 +137,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $task->setUser(null);
             }
         }
+
+    }
+
+    public function setRoles(?array $roles): self
+    {
+        $this->roles = $roles;
 
         return $this;
     }
