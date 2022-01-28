@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use AppBundle\Entity\User;
 
 class UserType extends AbstractType
 {
@@ -24,15 +25,22 @@ class UserType extends AbstractType
                 'second_options' => ['label' => 'Tapez le mot de passe à nouveau'],
             ])
             ->add('email', EmailType::class, ['label' => 'Adresse email'])
-            ->add('roles', ChoiceType::class, [
-                'multiple' => true,
-                'expanded' => true,
-                'required' => false,
-                'choices' => [
-                    "Rôle utilisateur"      => "ROLE_USER",
-                    "Rôle administrateur"  => "ROLE_ADMIN"
-                ]
-            ])
         ;
+        
+        $user = $options['data'];
+
+        if($user instanceof User && !is_null($user->getId()))
+        {
+            $builder
+                ->add('roles', ChoiceType::class, [
+                    'multiple' => true,
+                    'expanded' => true,
+                    'required' => false,
+                    'choices' => [
+                        "Rôle utilisateur"      => "ROLE_USER",
+                        "Rôle administrateur"  => "ROLE_ADMIN"
+                    ]
+                ]);
+        }
     }
 }
