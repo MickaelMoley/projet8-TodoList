@@ -4,10 +4,12 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Task;
 use AppBundle\Form\TaskType;
+use AppBundle\Security\Voter\TaskVoter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\User;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TaskController extends AbstractController
 {
@@ -102,6 +104,17 @@ class TaskController extends AbstractController
      */
     public function deleteTaskAction(Task $task)
     {
+
+        //On vérifie que l'utilisateur peut supprimer la tâche
+        try {
+            $this->denyAccessUnlessGranted(TaskVoter::TASK_DELETE, $task, "La tâche n'a pas pu être supprimée, vous n'en êtes pas l'auteur.");
+        }
+        catch (AccessDeniedException $exception)
+        {
+            $this->addFlash('error', $exception->getMessage());
+            return $this->redirectToRoute('task_list');
+        }
+
         $em = $this->getDoctrine()->getManager();
         $em->remove($task);
         $em->flush();
