@@ -82,6 +82,36 @@ class TaskControllerTest extends BaseTest
 
 		$this->assertNotEquals($nbTasksBeforeDelete, $nbTasksAfterDelete);
 
+		$this->assertSelectorExists('div:contains("La tâche a bien été supprimée.")');
+
+	}
+
+	/**
+	 * Test fonctionnel permettant de créer une tâche et marquer la tâche comme faite
+	 * @runInSeparateProcess
+	 */
+	public function testToggleTaskIsDone(){
+
+		$this->client->request('GET', '/');
+		$this->client->followRedirect();
+		$this->client->submitForm('Se connecter', [
+			'_username' => 'user_with_role_user',
+			'_password' => '1234'
+		]);
+		$this->client->followRedirect();
+		$this->assertResponseIsSuccessful();
+
+		$this->client->request('GET', '/tasks');
+		$this->assertResponseIsSuccessful();
+
+		$this->client->submitForm('Marquer comme faite');
+
+
+		$this->client->followRedirect();
+		$this->assertResponseIsSuccessful();
+
+		$this->assertSelectorExists('div:contains("Superbe ! La tâche Task_#0 a bien été marquée comme faite.")');
+
 	}
 
 
