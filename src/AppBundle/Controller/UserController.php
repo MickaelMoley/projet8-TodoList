@@ -16,6 +16,12 @@ class UserController extends AbstractController
      */
     public function listAction()
     {
+        //Vérifie que l'utilisateur ait les droits nécessaire pour accéder à cette page
+        if(!$this->isGranted("ROLE_ADMIN"))
+        {
+            return  $this->redirectToRoute('homepage');
+        }
+
         return $this->render('user/list.html.twig', ['users' => $this->getDoctrine()->getRepository('AppBundle:User')->findAll()]);
     }
 
@@ -51,6 +57,13 @@ class UserController extends AbstractController
      */
     public function editAction(User $user, Request $request, UserPasswordHasherInterface $userPasswordHasher)
     {
+
+        //Vérifie que l'utilisateur ait les droits nécessaire pour accéder à cette page
+        if(!$this->isGranted("ROLE_ADMIN"))
+        {
+            return  $this->redirectToRoute('homepage');
+        }
+
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
