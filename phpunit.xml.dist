@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" backupGlobals="false" colors="true" bootstrap="tests/bootstrap.php" convertErrorsToExceptions="true" convertNoticesToExceptions="false" convertWarningsToExceptions="false">
-  <coverage processUncoveredFiles="true">
-    <include>
-      <directory suffix=".php">src</directory>
-    </include>
-    <exclude>
-      <directory>src/*Bundle/Resources</directory>
-      <directory>src/*/*Bundle/Resources</directory>
-      <directory>src/*/Bundle/*Bundle/Resources</directory>
-    </exclude>
-  </coverage>
+<!--  <coverage processUncoveredFiles="true">-->
+<!--    <include>-->
+<!--      <directory suffix=".php">src</directory>-->
+<!--    </include>-->
+<!--    <exclude>-->
+<!--      <directory>src/*Bundle/Resources</directory>-->
+<!--      <directory>src/*/*Bundle/Resources</directory>-->
+<!--      <directory>src/*/Bundle/*Bundle/Resources</directory>-->
+<!--    </exclude>-->
+<!--  </coverage>-->
   <php>
     <ini name="error_reporting" value="-1"/>
     <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
@@ -27,4 +27,9 @@
   <listeners>
     <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
   </listeners>
+  <filter>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">src</directory>
+    </whitelist>
+  </filter>
 </phpunit>
