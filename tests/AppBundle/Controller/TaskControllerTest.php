@@ -115,6 +115,59 @@ class TaskControllerTest extends BaseTest
 	}
 
 
+	/**
+	 * Test si un utilisateur peut supprimer les tâches des autres
+     * Il devrait nous retourner un message d'erreur
+     * @runInSeparateProcess
+	 * @return void
+	 */
+	public function testUserCanDeleteOtherTasks(){
+
+		$this->createAnonymousTask();
+
+        $this->client->request('GET', '/');
+        $this->client->followRedirect();
+        $this->client->submitForm('Se connecter', [
+            '_username' => 'user_with_role_user',
+            '_password' => '1234'
+        ]);
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        $this->client->request('GET', '/tasks');
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $this->client->getCrawler();
+        //Sélectionne la dernière tâche qui correspond à une tâche reliée à l'utilisateur Anonymous
+        $taskNode = $crawler->filter('html > body > .container > .row')->last();
+        $taskNode = $taskNode->filter('div .thumbnail')->last();
+        $button = $taskNode->selectButton('Supprimer');
+        $form = $button->form();
+        $this->client->submit($form);
+
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        //Si ce selector existe, cela veut dire que la tâche n'a été supprimée, car cette tâche n'appartient pas à l'utilisateur
+        $this->assertSelectorExists('.alert.alert-danger');
+
+
+	}
+
+	private function createAnonymousTask(){
+
+		$anonymousUser = $this->manager->getRepository(User::class)->findOneBy(['username' => 'anonymous_user']);
+
+		$task = new Task();
+		$task->setTitle("AnonymousTask");
+		$task->setCreatedAt(new \DateTime('now'));
+		$task->setContent('AnonynousTaskContent');
+		$task->setUser($anonymousUser);
+
+		$this->manager->getManager()->persist($task);
+		$this->manager->getManager()->flush();
+	}
+
 
 
 
