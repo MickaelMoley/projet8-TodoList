@@ -5,3 +5,11 @@ php:
 script:
   - composer install
   - vendor/bin/phpunit
+env:
+  global:
+    CC_TEST_REPORTER_ID=bed2a9d2d9f4c9a705a567879b21b82b1247ac0d12ed63c63c59b194af1858c9
+
+before_install:
+  - nvm install                         # Install node version from .nvmrc
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
