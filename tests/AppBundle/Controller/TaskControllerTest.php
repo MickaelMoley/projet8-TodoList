@@ -168,6 +168,43 @@ class TaskControllerTest extends BaseTest
 		$this->manager->getManager()->flush();
 	}
 
+    /**
+     * Vérifie si l'utilisateur peut marquer une tâche comme faite
+     * @runInSeparateProcess
+     */
+    public function testIfUserCanMarkTaskAsDone(){
+        //Test si un utilisateur peut modifier une tâche
+
+        $this->client->request('GET', '/');
+        $this->client->followRedirect();
+        $this->client->submitForm('Se connecter', [
+            '_username' => 'user_with_role_user',
+            '_password' => '1234'
+        ]);
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        $this->client->request('GET', '/tasks');
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $this->client->getCrawler();
+        //Sélectionne la dernière tâche qui correspond à une tâche reliée à l'utilisateur Anonymous
+        $taskNode = $crawler->filter('html > body > .container > .row')->last();
+        $taskNode = $taskNode->filter('div .thumbnail')->last();
+        $button = $taskNode->selectButton('Marquer comme faite');
+        $form = $button->form();
+        $this->client->submit($form);
+
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        $this->assertSelectorExists('.alert.alert-success');
+
+
+    }
+
+
+
 
 
 
