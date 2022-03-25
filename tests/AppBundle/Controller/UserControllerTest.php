@@ -89,4 +89,88 @@ class UserControllerTest extends BaseTest
 
 	}
 
+    /**
+     * Fonction permettant de se connecter en tant qu'admin
+     * @runInSeparateProcess
+     */
+    public function testIfUserAdminCanConnect(){
+
+        $this->client->request('GET', '/');
+        $this->client->followRedirect();
+        $this->client->submitForm('Se connecter', [
+            '_username' => 'user_with_role_admin',
+            '_password' => '1234'
+        ]);
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+    }
+
+    /**
+     * Fonction permettant de se connecter en tant qu'admin et de lister les utilisateurs
+     * @runInSeparateProcess
+     */
+    public function testIfUserAdminCanListAllUsers(){
+
+
+        $this->client->request('GET', '/');
+        $this->client->followRedirect();
+        $this->client->submitForm('Se connecter', [
+            '_username' => 'user_with_role_admin',
+            '_password' => '1234'
+        ]);
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        //Lister les utilisateurs depuis la page des utilisateurs
+        $this->client->request('GET', '/users');
+        $this->assertResponseIsSuccessful();
+
+    }
+
+    /**
+     * Fonction permettant de se connecter en tant qu'admin et de modifier un utilisateur
+     * @runInSeparateProcess
+     */
+    public function testIfUserAdminCanEditUser(){
+
+        //On se connecte en tant qu'admin
+        $this->client->request('GET', '/');
+        $this->client->followRedirect();
+        $this->client->submitForm('Se connecter', [
+            '_username' => 'user_with_role_admin',
+            '_password' => '1234'
+        ]);
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        //On modifie un utilisateur
+        $this->client->request('GET', '/users');
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $this->client->getCrawler();
+        //Sélectionne la dernière tâche qui correspond à une tâche reliée à l'utilisateur Anonymous
+        $taskNode = $crawler->filter('html > body > .container > .row')->last();
+        $taskNode = $taskNode->filter('div table');
+        $userNode = $taskNode->filter('tbody tr:nth-child(1)');
+        $linkUserEdit = $userNode->filter('a')->link();
+
+        $this->client->click($linkUserEdit);
+        $this->assertResponseIsSuccessful();
+
+        //On modifie l'utilisateur
+        $this->client->submitForm('Modifier', [
+            'user[username]' 			=> 'user_with_role_user',
+            'user[password][first]' 	=> '5678',
+            'user[password][second]' 	=> '5678',
+            'user[email]'				=> 'user_with_role_user_modified@mail.com'
+        ]);
+
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        $this->assertSelectorExists('.alert.alert-success');
+
+    }
+
 }
