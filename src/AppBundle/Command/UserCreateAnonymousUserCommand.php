@@ -12,6 +12,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use AppBundle\Entity\User;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+/**
+ * @codeCoverageIgnore*
+ */
 class UserCreateAnonymousUserCommand extends Command
 {
     protected static $defaultName = 'user:create-anonymous-user';

@@ -9,6 +9,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
+/**
+ *
+ * @codeCoverageIgnore
+ *
+ */
 class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
