@@ -9,7 +9,7 @@ use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class LoadAppFixtures implements FixtureInterface {
+class LoadAppFixtures extends Fixture implements FixtureInterface {
 
 
 	private UserPasswordHasherInterface $passwordHasher;
